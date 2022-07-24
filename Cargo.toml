@@ -1,0 +1,23 @@
+[package]
+name = "glicol_server"
+authors = ["Martin Trumann <martin.trumann@pm.me>"]
+version = "0.1.0"
+edition = "2021"
+
+[features]
+fifo = ["nix"]
+
+[dependencies]
+cpal = "0.13.5"
+
+lazy_static = "1.4.0"
+
+nix = { version =  "0.24", features = ["fs"], optional = true }
+
+[dependencies.glicol]
+git = "https://github.com/chaosprint/glicol"
+rev = "5ec8af5d02d0e1533b1d6e556bc4775cee9ee47b"
+features = ["use-samples", "use-meta"]
+
+[profile.dev]
+opt-level = 1
