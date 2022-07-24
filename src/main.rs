@@ -76,7 +76,7 @@ impl App {
         }
     }
 
-    fn parse_inp(&mut self, s: String) {
+    fn header(&mut self, s: &str) {
         let mut glicol = GLICOL.lock().unwrap();
 
         let (command, arg) = if let Some((cmd, arg)) = s.trim().split_once(' ') {
@@ -86,15 +86,6 @@ impl App {
         };
 
         match command {
-            "quit" | "q" => self.running = false,
-            "play" | "p" => {
-                let _ = self.stream.play();
-                glicol.play();
-            }
-            "stop" | "s" | "pause" => {
-                let _ = self.stream.pause();
-                glicol.pause();
-            }
             "set_bpm" if arg.is_some() => {
                 if let Some(arg) = arg.unwrap().parse::<u16>().ok() {
                     let engine = glicol.engine();
@@ -104,9 +95,37 @@ impl App {
                 }
             }
             "set_bpm" if arg.is_none() => eprintln!("no arg"),
-            "ping" => eprintln!("pong"),
             "" => (),
-            _ => match glicol.set_code(s) {
+            _ => (),
+        }
+    }
+
+    fn parse_inp(&mut self, mut string: String) {
+        if let Some(header_end) = string.find("\n---\n") {
+            let content = string.split_off(header_end + 5);
+
+            let _ = string.split_off(string.len() - 5);
+
+            for line in string.lines() {
+                self.header(line);
+            }
+
+            string = content
+        };
+
+        let mut glicol = GLICOL.lock().unwrap();
+        match string.trim() {
+            "quit" | "q" => self.running = false,
+            "play" | "p" => {
+                let _ = self.stream.play();
+                glicol.play();
+            }
+            "stop" | "s" | "pause" => {
+                let _ = self.stream.pause();
+                glicol.pause();
+            }
+            "" => (),
+            _ => match glicol.set_code(string) {
                 Ok(()) => {}
                 Err(e) => {
                     eprintln!("GLICOL ERROR: {:?}", e)

@@ -39,18 +39,7 @@ impl Inputs {
         for inp in self.0.iter_mut() {
             let mut inp_str = String::new();
             if inp.read_to_string(&mut inp_str).unwrap() {
-                if inp_str.contains('') {
-                    let mut command = String::new();
-                    for ch in inp_str.chars() {
-                        if ch == '' && !command.is_empty() {
-                            out.push(std::mem::take(&mut command));
-                        } else {
-                            command.push(ch);
-                        };
-                    }
-                } else {
-                    out.push(inp_str)
-                }
+                out.push(inp_str)
             };
         }
         out

@@ -28,13 +28,9 @@ To resume use `p` or `play`:
 echo play > /tmp/glicol.fifo
 ```
 
-To change the bpm of the engine use `set_bpm`:
+To change the bpm of the engine use `set_bpm` at top of the file:
 ```
-echo set_bpm 66 > /tmp/glicol.fifo
+set_bpm 66
+---
+o: seq 40 60 50 40 >> sawsyth 0.01 0.1
 ```
-
-To set it in file add:
-```
-set_bpm 66
-```
-to the top of the file.
